@@ -7,7 +7,10 @@
 int main(int argc, char *argv[])
 {
    QApplication app(argc, argv);
-   ShrinkChoiceWin win("E:\\Temp\\AudiS5Cabrio.png");
+   QString fileName;
+   if (argc == 2)
+      fileName = argv[1];
+   ShrinkChoiceWin win(fileName);
    win.show();
    return app.exec();
 }

@@ -298,6 +298,11 @@ ShrinkChoiceWin::ShrinkChoiceWin(const QString &aImage, QWidget *aParent):
       SIGNAL(clicked()),
       this,
       SLOT(selectSourceFile()));
+   connect(
+      &m_lPreview,
+      SIGNAL(linkActivated(QString)),
+      this,
+      SLOT(selectSourceFile()));
 
    connect(
       &m_btnDestFile,
@@ -360,6 +365,12 @@ void ShrinkChoiceWin::retranslateUi()
    else
    {
       m_btnJustShrink.setDescription(tr("Let Shrinky determine the best settings to shrink this image."));
+   }
+   if (m_strSourceFileName.isEmpty())
+   {
+      m_lPreview.setText(
+         "<p><img src=\":/Shrinky.png\" alt=\"Shrinky\"/></p><p><center><a href=\"load\">" +
+         tr("Click here to load an image to shrink.") + "</a></center></p>");
    }
 }
 
@@ -567,7 +578,7 @@ void ShrinkChoiceWin::finish()
       QString url = "file:///" + m_edDestFile.text();
       QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
    }
-//   close();
+   close();
 }
 
 void ShrinkChoiceWin::selectSourceFile()
@@ -586,6 +597,17 @@ void ShrinkChoiceWin::selectSourceFile()
 
 bool ShrinkChoiceWin::setSourceFile(const QString &aFileName)
 {
+   if (aFileName.isEmpty())
+   {
+      m_imgSource = QImage();
+      m_strSourceFileName.clear();
+      m_edPercentWidth.setText(QString());
+      m_edPercentHeight.setText(QString());
+      m_edPixelsWidth.setText(QString());
+      m_edPixelsHeight.setText(QString());
+      m_edDestFile.setText(QString());
+      return false;
+   }
    if (!m_imgSource.load(aFileName))
    {
       QMessageBox::warning(

@@ -4,5 +4,6 @@
         <file>English.png</file>
         <file>German.png</file>
         <file>Shrinky_de.qm</file>
+        <file>Shrinky.png</file>
     </qresource>
 </RCC>

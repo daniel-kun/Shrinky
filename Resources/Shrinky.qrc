@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>ShrinkyLogo-256.png</file>
+        <file>English.png</file>
+        <file>German.png</file>
+        <file>Shrinky_de.qm</file>
+    </qresource>
+</RCC>

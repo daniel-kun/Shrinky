@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>Background.png</file>
+        <file>Button.png</file>
+        <file>Shrinky.png</file>
+        <file>ShrinkyLogo-256.png</file>
+    </qresource>
+</RCC>

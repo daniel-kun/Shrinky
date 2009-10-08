@@ -7,10 +7,11 @@
 
 ShrinkyInstaller::ShrinkyInstaller():
    m_lLogo(this),
+   m_lSubText(this),
    m_lSettings(this),
-   m_btnInstall(this)
+   m_btnInstall(this),
+   m_settings(this)
 {
-   setWindowTitle(tr("Install Shrinky"));
    setWindowIcon(QIcon(":/ShrinkyLogo-256.png"));
    setObjectName("ShrinkyInstaller");
    setStyleSheet("QWidget#ShrinkyInstaller{ background-image: url(:/Background.png); }");
@@ -20,10 +21,26 @@ ShrinkyInstaller::ShrinkyInstaller():
    m_lLogo.setPixmap(pix);
 
    QFont font = m_btnInstall.font();
-//   font.setBold(true);
    font.setPointSizeF(font.pointSizeF() * 1.5);
    font.setStretch(130);
    m_btnInstall.setFont(font);
+
+   m_lSettings.move(7, height() - 25);
+   m_lSettings.setTextInteractionFlags(Qt::TextBrowserInteraction);
+   m_settings.setVisible(false);
+
+   connect(
+      &m_lSettings,
+      SIGNAL(linkActivated(QString)),
+      this,
+      SLOT(showSettings()));
+
+   retranslateUi();
+}
+
+void ShrinkyInstaller::retranslateUi()
+{
+   setWindowTitle(tr("Install Shrinky"));
    m_btnInstall.setText(tr("Install now!"));
    m_btnInstall.adjustSize();
    m_btnInstall.resize(
@@ -32,9 +49,29 @@ ShrinkyInstaller::ShrinkyInstaller():
    m_btnInstall.move(
       (width() - m_btnInstall.width()) / 2,
       300);
+   QString templ = "<a href=\"settings\">%1</a>";
+   if (m_settings.isVisible())
+      m_lSettings.setText(templ.arg(tr("Hide settings")));
+   else
+      m_lSettings.setText(templ.arg(tr("Show settings")));
+   m_settings.retranslateUi();
+}
 
-   m_lSettings.setText("<a href=\"settings\">" + tr("Change settings") + "</a>");
-   m_lSettings.move(7, height() - 25);
+void ShrinkyInstaller::showSettings()
+{
+   if (!m_settings.isVisible())
+   {
+      int w = m_lSettings.x() + m_lSettings.width() + 7;
+      int t = m_btnInstall.y() + m_btnInstall.height() + 2;
+      int h = (height() - t - 2);
+      m_settings.setGeometry(
+         w,
+         t,
+         width() - w * 2,
+         h);
+   }
+   m_settings.setVisible(!m_settings.isVisible());
+   retranslateUi();
 }
 
 int main(int argc, char *argv[])

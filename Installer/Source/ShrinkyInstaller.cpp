@@ -2,20 +2,21 @@
 
 #include <QApplication>
 #include <QPainter>
+#include <QPainter>
 #include <QPixmap>
 #include <QBitmap>
 
 ShrinkyInstaller::ShrinkyInstaller():
+   QWidget(0, Qt::Dialog),
+   m_imgBackground(":/Background.png"),
    m_lLogo(this),
    m_lSubText(this),
    m_lSettings(this),
    m_btnInstall(this),
    m_settings(this)
 {
+   setFixedSize(600, 400);
    setWindowIcon(QIcon(":/ShrinkyLogo-256.png"));
-   setObjectName("ShrinkyInstaller");
-   setStyleSheet("QWidget#ShrinkyInstaller{ background-image: url(:/Background.png); }");
-   resize(600, 400);
    QPixmap pix(":/Shrinky.png");
    m_lLogo.move((width() - pix.width()) / 2, 70);
    m_lLogo.setPixmap(pix);
@@ -36,6 +37,13 @@ ShrinkyInstaller::ShrinkyInstaller():
       SLOT(showSettings()));
 
    retranslateUi();
+}
+
+void ShrinkyInstaller::paintEvent(QPaintEvent *event)
+{
+   QPainter painter(this);
+   painter.drawImage(rect(), m_imgBackground);
+   QWidget::paintEvent(event);
 }
 
 void ShrinkyInstaller::retranslateUi()

@@ -4,17 +4,23 @@
 #include "InstallSettings.h"
 
 #include <QFrame>
-#include <QPushButton>
+#include <QImage>
 #include <QLabel>
+#include <QPushButton>
 
-class ShrinkyInstaller: public QFrame
+class ShrinkyInstaller: public QWidget
 {
    Q_OBJECT
 
 public:
     ShrinkyInstaller();
 
+protected:
+    virtual void paintEvent(QPaintEvent *event);
+
 private:
+   QImage m_imgBackground;
+
     QLabel m_lLogo, m_lSubText, m_lSettings;
     QPushButton m_btnInstall;
 

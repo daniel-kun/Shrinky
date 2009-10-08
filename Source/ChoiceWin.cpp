@@ -4,6 +4,7 @@
 
 #include <QUrl>
 #include <QDir>
+#include <QPainter>
 #include <QFileInfo>
 #include <QFileDialog>
 #include <QCloseEvent>
@@ -115,7 +116,7 @@ namespace
 
 ShrinkChoiceWin::ShrinkChoiceWin(const QString &aImage, QWidget *aParent):
    QWidget(aParent),
-   m_pxBackground(":/BackgroundGradient.png"),
+   m_imgBackground(":/Background.png"),
    m_vlMain(this),
    m_vlPreview(&m_frPreview),
    m_vlSettings(&m_gbSettings),
@@ -124,24 +125,18 @@ ShrinkChoiceWin::ShrinkChoiceWin(const QString &aImage, QWidget *aParent):
    m_glShrinkPercent(&m_wShrinkPercent),
    m_valPixels(0),
    m_valPercent(0),
-   m_askedForOverwrite(false)
+   m_askedForOverwrite(false),
+   m_firstShow(false)
 {
-   setWindowIcon(QPixmap(":/ShrinkyLogo-256.png"));
-   QPalette pal(palette());
-   QLinearGradient gradient(
-         QPointF(width() / 2, height()),
-         QPointF(width() / 2, height() - 350));
-   gradient.setColorAt(0, QColor(145, 210, 255, 255));
-   gradient.setColorAt(1, Qt::white);
-   pal.setBrush(QPalette::Window, QBrush(gradient));
-   setPalette(pal);
    setMinimumWidth(550);
+   QRect r = m_imgBackground.rect();
+   setObjectName("Shrinky");
    m_vlMain.addLayout(&m_hlPreviewFrame);
    m_vlMain.addWidget(&m_btnJustShrink);
    m_vlMain.addWidget(&m_btnCustomShrink);
    m_vlMain.addWidget(&m_gbSettings);
    m_vlMain.addLayout(&m_hlBottom);
-   m_vlMain.addStretch(1);
+//   m_vlMain.addStretch(1);
 
    m_hlPreviewFrame.addStretch(1);
    m_hlPreviewFrame.addWidget(&m_frPreview);
@@ -377,12 +372,15 @@ void ShrinkChoiceWin::retranslateUi()
 void ShrinkChoiceWin::showEvent(QShowEvent *event)
 {
    QWidget::showEvent(event);
-   resize(sizeHint());
-   resize(width(), 1);
-   QDesktopWidget desktop;
-   QRect r(frameGeometry());
-   r.moveCenter(desktop.availableGeometry(this).center());
-   move(r.left(), r.top());
+/*   if (m_firstShow)
+   {
+      m_firstShow = false;
+      adjustSize();
+      QDesktopWidget desktop;
+      QRect r(frameGeometry());
+      r.moveCenter(desktop.availableGeometry(this).center());
+      move(r.left(), r.top());
+   }*/
 }
 
 void ShrinkChoiceWin::closeEvent(QCloseEvent *event)
@@ -391,11 +389,18 @@ void ShrinkChoiceWin::closeEvent(QCloseEvent *event)
       event->ignore();
 }
 
+void ShrinkChoiceWin::paintEvent(QPaintEvent *event)
+{
+   QPainter painter(this);
+   painter.drawImage(rect(), m_imgBackground);
+   QWidget::paintEvent(event);
+}
+
 void ShrinkChoiceWin::updateSettingsVisible()
 {
    m_gbSettings.setVisible(m_btnCustomShrink.isChecked());
    retranslateUi();
-   resize(width(), 1);
+   readjust();
 }
 
 void ShrinkChoiceWin::updateShrinkSettingWidgets()
@@ -403,7 +408,7 @@ void ShrinkChoiceWin::updateShrinkSettingWidgets()
    m_wShrinkFileSize.setVisible(m_rbShrinkFileSize.isChecked());
    m_wShrinkPixels.setVisible(m_rbShrinkPixels.isChecked());
    m_wShrinkPercent.setVisible(m_rbShrinkPercent.isChecked());
-   resize(width(), 1);
+   readjust();
 }
 
 void ShrinkChoiceWin::keepAspectPixelWidth()
@@ -668,12 +673,17 @@ void ShrinkChoiceWin::setLangEnglish()
 {
    qApp->removeTranslator(&m_translatorGer);
    retranslateUi();
-   resize(width(), 1);
+   readjust();
 }
 
 void ShrinkChoiceWin::setLangGerman()
 {
    qApp->installTranslator(&m_translatorGer);
    retranslateUi();
-   resize(width(), 1);
+   readjust();
+}
+
+void ShrinkChoiceWin::readjust()
+{
+   adjustSize();
 }

@@ -1,4 +1,4 @@
-DESTDIR = e:/development/Shrinky/Release
+#DESTDIR = e:/development/Shrinky/Release
 HEADERS += ../Source/ShrinkyInstaller.h \
     ../Source/InstallSettings.h \
     ../Source/InstallUtils.h

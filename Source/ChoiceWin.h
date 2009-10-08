@@ -74,11 +74,12 @@ public:
 protected:
    virtual void showEvent(QShowEvent *event);
    virtual void closeEvent(QCloseEvent *event);
+   virtual void paintEvent(QPaintEvent *event);
 
 private:
    QString m_strSourceFileName;
    QImage m_imgSource;
-   QPixmap m_pxBackground;
+   QImage m_imgBackground;
    ShrinkWorker m_worker;
 
    QVBoxLayout m_vlMain;
@@ -127,6 +128,7 @@ private:
    QTranslator m_translatorGer;
 
    bool m_askedForOverwrite;
+   bool m_firstShow;
 
    void retranslateUi();
    bool setSourceFile(const QString &aFileName);
@@ -153,6 +155,8 @@ private slots:
 
    void setLangEnglish();
    void setLangGerman();
+
+   void readjust();
 };
 
 #endif
